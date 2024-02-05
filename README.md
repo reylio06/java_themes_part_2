@@ -1,4 +1,4 @@
-![image](https://github.com/reylio06/java_themes_part_2/assets/101171969/2045c2f3-b116-4553-afc4-05ad04c3cee0)Create a custom BusinessException class that can also return a meaningful error message to the user, depending on use case
+Create a custom BusinessException class that can also return a meaningful error message to the user, depending on use case
  
 
 Provide the user with a menu input and the following options:
