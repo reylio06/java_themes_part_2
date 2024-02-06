@@ -1,40 +1,45 @@
 import java.io.*;
 import java.util.*;
-import java.util.Set;
 
 public class FileProcessor {
     public List<String> readFromFile(String filePath) throws BusinessException {
         try (BufferedReader reader = new BufferedReader(new FileReader(filePath))) {
+            // Initialize a list to store lines read from the file
             List<String> lines = new ArrayList<>();
             String line;
+            // Read each line from the file and add it to the list
             while ((line = reader.readLine()) != null) {
                 lines.add(line);
             }
+            // Return the list of lines read from the file
             return lines;
         } catch (IOException e) {
+            // If an IOException occurs during file reading, wrap it in a BusinessException and throw
             throw new BusinessException(e.getMessage(), "readFromFile");
         }
     }
 
     public void writeToFile(String filePath, List<String> lines) throws BusinessException {
-        // Debug statement
-        System.out.println("Writing to file: " + filePath);
+        // Create a File object using the specified file path
         File file = new File(filePath);
+        // Get the parent directory of the file
         File parentDirectory = file.getParentFile();
 
+        // Check if the parent directory does not exist
         if (!parentDirectory.exists()) {
             // Create parent directories if they don't exist
             parentDirectory.mkdirs();
         }
 
+        // Initialize a PrintWriter to write lines to the file
+        // Iterate through the list of lines and write each line to the file
         try (PrintWriter writer = new PrintWriter(new FileWriter(filePath))) {
             for (String line : lines) {
                 writer.println(line);
             }
         } catch (IOException e) {
+            // If an IOException occurs during file writing, wrap it in a BusinessException and throw
             throw new BusinessException(e.getMessage(), "writeToFile");
         }
-        // Debug statement
-        System.out.println("Write operation completed.");
     }
 }

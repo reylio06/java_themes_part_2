@@ -1,14 +1,19 @@
-import java.io.IOException;
-import java.util.InputMismatchException;
 import java.util.Scanner;
 import java.util.*;
+import java.util.logging.Logger;
 
 public class Main {
+    // Define constants for input, sorted, and unique files.
     static final String INPUT_FILE = "src/main/resources/userInput.csv";
     static final String SORTED_FILE = "src/main/resources/sortedInput.csv";
     static final String UNIQUE_FILE = "src/main/resources/uniqueInput.csv";
+    static final Logger logger = Logger.getLogger(StringProcessor.class.getName());
+
+
     public static void main(String[] args) {
+        // Initialize Scanner for user input
         Scanner scanner = new Scanner(System.in);
+        // Initialize StringProcessor and FileProcessor instances
         StringProcessor stringProcessor = new StringProcessor(INPUT_FILE, SORTED_FILE, UNIQUE_FILE);
         FileProcessor fileProcessor = new FileProcessor();
 
@@ -22,31 +27,38 @@ public class Main {
                 System.out.println("5. Exit");
 
                 System.out.print("Enter your choice: ");
+                // Read user choice
                 int choice = scanner.nextInt();
+                // Consume newline character
                 scanner.nextLine();
 
                 switch (choice) {
                     case 1:
+                        // Get validated strings from user and write to input file
                         List<String> inputStrings = getValidatedStrings(scanner);
                         fileProcessor.writeToFile(StringProcessor.INPUT_FILE, inputStrings);
                         break;
                     case 2:
+                        // Read strings from input file, sort them, and write to sorted file
                         List<String> sortedStrings = stringProcessor.sortStrings(fileProcessor.readFromFile(StringProcessor.INPUT_FILE));
                         fileProcessor.writeToFile(StringProcessor.SORTED_FILE, sortedStrings);
-                        System.out.println("Strings sorted and written to '" + StringProcessor.SORTED_FILE + "'.");
+                        logger.info("Strings sorted and written to '" + StringProcessor.SORTED_FILE + "'.");
                         break;
                     case 3:
+                        // Read strings from input file, remove duplicates, and write to unique file
                         List<String> inputStringsForDupRemoval = fileProcessor.readFromFile(StringProcessor.INPUT_FILE);
                         List<String> uniqueStrings = stringProcessor.removeDuplicates(inputStringsForDupRemoval);
                         fileProcessor.writeToFile(StringProcessor.UNIQUE_FILE, uniqueStrings);
-                        System.out.println("Duplicates removed and unique strings written to '" + StringProcessor.UNIQUE_FILE + "'.");
+                        logger.info("Duplicates removed and unique strings written to '" + StringProcessor.UNIQUE_FILE + "'.");
                         break;
                     case 4:
+                        // Get strings to update from user, update the file, and log the operation
                         List<String> updatedStrings = getUpdatedStrings(scanner, fileProcessor);
                         fileProcessor.writeToFile(UNIQUE_FILE, updatedStrings);
-                        System.out.println("String updated in '" + UNIQUE_FILE + "'.");
+                        logger.info("String updated in '" + UNIQUE_FILE + "'.");
                         break;
                     case 5:
+                        // Exit the program
                         System.out.println("Exiting program.");
                         System.exit(0);
                     default:
@@ -63,6 +75,7 @@ public class Main {
     public static List<String> getValidatedStrings(Scanner scanner) throws BusinessException {
         // Move the logic of getValidatedStrings from StringProcessor to Main
         List<String> strings = new ArrayList<>();
+        // Keep asking for strings until an empty string is entered
         while (true) {
             System.out.print("Enter a string (press Enter to finish): ");
             String input = scanner.nextLine();
@@ -70,16 +83,19 @@ public class Main {
                 break;
             }
             try {
+                // Validate the input string
                 validateString(input);
                 strings.add(input);
             } catch (BusinessException e) {
-                System.out.println("Error: " + e.getMessage());
+                // If validation fails, throw BusinessException
+                e.printStackTrace();
             }
         }
         return strings;
     }
 
     public static void validateString(String input) throws BusinessException {
+        // Check if the string contains only letters and numbers.
         if (!input.matches("[a-zA-Z0-9]+")) {
             throw new BusinessException("Invalid characters in string. Only letters and numbers are allowed.", "validateString");
         }
@@ -88,11 +104,14 @@ public class Main {
     public static List<String> getUpdatedStrings(Scanner scanner, FileProcessor fileProcessor) throws BusinessException {
         List<String> updatedStrings = new ArrayList<>();
         try {
+            // Get string to update and the updated string from user input
             System.out.print("Enter string to update: ");
             String searchString = scanner.nextLine();
             System.out.print("Enter updated string: ");
             String updatedString = scanner.nextLine();
+            // Read strings from unique file
             List<String> lines = fileProcessor.readFromFile(UNIQUE_FILE);
+            // Update the string in the list if found.
             for (int i = 0; i < lines.size(); i++) {
                 if (lines.get(i).equals(searchString)) {
                     lines.set(i, updatedString);
