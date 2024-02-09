@@ -2,12 +2,9 @@ import java.util.*;
 
 class StringProcessor {
     // Define constants for input, sorted, and unique files
-    static final String INPUT_FILE = "src/main/resources/userInput.csv";
-    static final String SORTED_FILE = "src/main/resources/sortedInput.csv";
-    static final String UNIQUE_FILE = "src/main/resources/uniqueInput.csv";
 
     // Constructor to initialize input, sorted, and unique file paths
-    public StringProcessor(String inputFile, String sortedFile, String uniqueFile) {
+    public StringProcessor() {
     }
 
     // Method to sort a list of strings in lexicographic order

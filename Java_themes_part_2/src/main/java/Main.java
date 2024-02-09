@@ -14,7 +14,7 @@ public class Main {
         // Initialize Scanner for user input
         Scanner scanner = new Scanner(System.in);
         // Initialize StringProcessor and FileProcessor instances
-        StringProcessor stringProcessor = new StringProcessor(INPUT_FILE, SORTED_FILE, UNIQUE_FILE);
+        StringProcessor stringProcessor = new StringProcessor();
         FileProcessor fileProcessor = new FileProcessor();
 
         try {
@@ -36,24 +36,24 @@ public class Main {
                     case 1:
                         // Get validated strings from user and write to input file
                         List<String> inputStrings = getValidatedStrings(scanner);
-                        fileProcessor.writeToFile(StringProcessor.INPUT_FILE, inputStrings);
+                        fileProcessor.writeToFile(INPUT_FILE, inputStrings);
                         break;
                     case 2:
                         // Read strings from input file, sort them, and write to sorted file
-                        List<String> sortedStrings = stringProcessor.sortStrings(fileProcessor.readFromFile(StringProcessor.INPUT_FILE));
-                        fileProcessor.writeToFile(StringProcessor.SORTED_FILE, sortedStrings);
-                        logger.info("Strings sorted and written to '" + StringProcessor.SORTED_FILE + "'.");
+                        List<String> sortedStrings = stringProcessor.sortStrings(fileProcessor.readFromFile(INPUT_FILE));
+                        fileProcessor.writeToFile(SORTED_FILE, sortedStrings);
+                        logger.info("Strings sorted and written to '" + SORTED_FILE + "'.");
                         break;
                     case 3:
                         // Read strings from input file, remove duplicates, and write to unique file
-                        List<String> inputStringsForDupRemoval = fileProcessor.readFromFile(StringProcessor.INPUT_FILE);
+                        List<String> inputStringsForDupRemoval = fileProcessor.readFromFile(INPUT_FILE);
                         List<String> uniqueStrings = stringProcessor.removeDuplicates(inputStringsForDupRemoval);
-                        fileProcessor.writeToFile(StringProcessor.UNIQUE_FILE, uniqueStrings);
-                        logger.info("Duplicates removed and unique strings written to '" + StringProcessor.UNIQUE_FILE + "'.");
+                        fileProcessor.writeToFile(UNIQUE_FILE, uniqueStrings);
+                        logger.info("Duplicates removed and unique strings written to '" + UNIQUE_FILE + "'.");
                         break;
                     case 4:
                         // Get strings to update from user, update the file, and log the operation
-                        List<String> updatedStrings = getUpdatedStrings(scanner, fileProcessor);
+                        List<String> updatedStrings = updateStrings(scanner, fileProcessor);
                         fileProcessor.writeToFile(UNIQUE_FILE, updatedStrings);
                         logger.info("String updated in '" + UNIQUE_FILE + "'.");
                         break;
@@ -66,7 +66,7 @@ public class Main {
                 }
             }
         } catch (BusinessException e) {
-            e.getMessage();
+            System.out.println(e.getMessage() + " " + e.getOperationName());
         } finally {
             scanner.close();
         }
@@ -79,16 +79,18 @@ public class Main {
         while (true) {
             System.out.print("Enter a string (press Enter to finish): ");
             String input = scanner.nextLine();
+
             if (input.isEmpty()) {
                 break;
             }
+
             try {
                 // Validate the input string
                 validateString(input);
                 strings.add(input);
             } catch (BusinessException e) {
                 // If validation fails, throw BusinessException
-                e.printStackTrace();
+                System.out.println(e.getMessage() + " " + e.getOperationName());
             }
         }
         return strings;
@@ -101,7 +103,7 @@ public class Main {
         }
     }
 
-    public static List<String> getUpdatedStrings(Scanner scanner, FileProcessor fileProcessor) throws BusinessException {
+    public static List<String> updateStrings(Scanner scanner, FileProcessor fileProcessor) throws BusinessException {
         List<String> updatedStrings = new ArrayList<>();
         try {
             // Get string to update and the updated string from user input
