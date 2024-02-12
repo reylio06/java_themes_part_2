@@ -1,5 +1,5 @@
 public class BusinessException extends Exception {
-    private String operationName;
+    private final String operationName;
 
     public BusinessException(String message, String operationName) {
 
@@ -13,10 +13,5 @@ public class BusinessException extends Exception {
     public String getOperationName() {
 
         return operationName;
-    }
-
-    public void setOperationName(String operationName) {
-
-        this.operationName = operationName;
     }
 }
